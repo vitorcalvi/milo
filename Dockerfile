@@ -78,4 +78,4 @@ RUN python3 /tmp/WAVEGO/RPi/setup.py
 
 #RUN git clone https://github.com/waveshare/WAVEGO
 WORKDIR /tmp/WAVEGO/RPi
-ENTRYPOINT python3 /tmp/WAVEGO/RPi/webServer.py
+#ENTRYPOINT python3 /tmp/WAVEGO/RPi/webServer.py
