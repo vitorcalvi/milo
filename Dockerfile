@@ -82,43 +82,70 @@ WORKDIR /tmp/WAVEGO/RPi
 ## VERSION 1.3.0
 ##################
 
+#RUN pip3 install deepspeech
+RUN wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-cp37-cp37m-linux_armv7l.whl
+RUN pip3 install --upgrade setuptools pip
+
+#RUN pip install 'https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-cp37-cp37m-linux_aarch64.whl'
+RUN pip3 install 'https://github.com/mozilla/DeepSpeech/releases/download/v0.9.2/deepspeech-0.9.2-cp37-cp37m-linux_armv7l.whl'
 ## Mozilla TXT-Speach
 ## docker run -it --cap-add=SYS_ADMIN --cap-add=NET_ADMIN --net=host ......
+#RUN wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-cp37-cp37m-linux_aarch64.whl
+#RUN pip3 install --user deepspeech-0.9.3-cp37-cp37m-linux_aarch64.whl
 
 
 ## VERSION 1.3.1
 #RUN git clone  https://github.com/mozilla/TTS.git
-RUN wget http://192.168.1.50:9000/LEGACY/TTS.tar.gz
-RUN tar xf TTS.tar.gz
+#RUN wget http://192.168.1.50:9000/LEGACY/TTS.tar.gz
+#RUN tar xf TTS.tar.gz
 
-WORKDIR TTS
+#WORKDIR TTS
+#RUN sudo apt-get install gcc-4.9 -y
+#RUN sudo apt-get upgrade libstdc++6 -y
+#RUN sudo apt-get install -y python3-numpy
+#RUN sudo apt-get install libatlas-base-dev -y
 
-RUN pip3 install torch>=1.5
-RUN pip3 install tensorflow==2.3.1
-RUN pip3 install numpy==1.17.5
-RUN pip3 install scipy>=0.19.0
-RUN pip3 install numba==0.48
-RUN pip3 install librosa==0.7.2
-RUN pip3 install phonemizer>=2.2.0
-RUN pip3 install unidecode==0.4.20
-RUN pip3 install tensorboardX
-RUN pip3 install matplotlib
-RUN pip3 install Pillow
-RUN pip3 install tqdm
-RUN pip3 install inflect
-RUN pip3 install bokeh==1.4.0
-RUN pip3 install pysbd
-RUN pip3 install pyworld
-RUN pip3 install soundfile
-RUN pip3 install nose==1.3.7
-RUN pip3 install cardboardlint==1.3.0
-RUN pip3 install pylint==2.5.3
-RUN pip3 install gdown
-RUN pip3 install umap-learn
-RUN pip3 install cython
-RUN pip3 install pyyaml
+## PICO TTS
+#RUN apt-get update -y
+#RUN wget https://launchpad.net/ubuntu/+archive/primary/+files/hardening-includes_2.8+nmu3ubuntu1_all.deb
+#RUN dpkg -i hardening-includes_2.8+nmu3ubuntu1_all.deb
+#RUN sudo apt-get install -y fakeroot debhelper automake autoconf libtool help2man libpopt-dev 
+#RUN mkdir pico_build
+#USER root
+#WORKDIR pico_build
+#RUN apt-get source libttspico-utils
+#WORKDIR svox-1.0+git20110131
+#RUN dpkg-buildpackage  -us -uc
+#RUN sudo dpkg -i libttspico-data_1.0+git20110131-2_all.deb
+#RUN sudo dpkg -i libttspico0_1.0+git20110131-2_armhf.deb
+#RUN sudo dpkg -i libttspico-utils_1.0+git20110131-2_armhf.deb
+
+#RUN pip3 install --trusted-host pypi.org --trusted-host piwheels.org torch
+#RUN pip3 install tensorflow==2.3.1
+#RUN pip3 install numpy==1.17.5
+#RUN pip3 install scipy>=0.19.0
+#RUN pip3 install numba==0.48
+#RUN pip3 install librosa==0.7.2
+#RUN pip3 install phonemizer>=2.2.0
+#RUN pip3 install unidecode==0.4.20
+#RUN pip3 install tensorboardX
+#RUN pip3 install matplotlib
+#RUN pip3 install Pillow
+#RUN pip3 install tqdm
+#RUN pip3 install inflect
+#RUN pip3 install bokeh==1.4.0
+#RUN pip3 install pysbd
+#RUN pip3 install pyworld
+#RUN pip3 install soundfile
+#RUN pip3 install nose==1.3.7
+#RUN pip3 install cardboardlint==1.3.0
+#RUN pip3 install pylint==2.5.3
+#RUN pip3 install gdown
+#RUN pip3 install umap-learn
+#RUN pip3 install cython
+#RUN pip3 install pyyaml
 
 
-####RUN pip3 install -e .
+#RUN pip3 install -e .
 
 
