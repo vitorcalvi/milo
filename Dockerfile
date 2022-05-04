@@ -9,73 +9,67 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 RUN sudo apt-get install -y -q
 
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install wget nano git -y
+RUN apt-get install -y wget nano git python3 python3-pip 
 
 
-## SERVER OPENSSH
-RUN apt-get install -y openssh-server
-RUN mkdir /var/run/sshd
-RUN echo 'root:1' | chpasswd
-RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
-RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
-EXPOSE 22
-CMD ["/usr/sbin/sshd", "-D"]
+# Version 1.1.0
+## INSTALL OPENCV
+## Source: https://gist.github.com/willprice/abe456f5f74aa95d7e0bb81d5a710b60
 
+RUN wget 'https://gist.githubusercontent.com/willprice/abe456f5f74aa95d7e0bb81d5a710b60/raw/d3d8e2f2b619ff9d266d4614a27962870382ed2e/build-opencv.sh'
+RUN wget https://gist.githubusercontent.com/willprice/abe456f5f74aa95d7e0bb81d5a710b60/raw/d3d8e2f2b619ff9d266d4614a27962870382ed2e/download-opencv.sh
+RUN wget https://gist.githubusercontent.com/willprice/abe456f5f74aa95d7e0bb81d5a710b60/raw/d3d8e2f2b619ff9d266d4614a27962870382ed2e/install-deps.sh
+RUN chmod +x *.sh && ./download-opencv.sh && ./install-deps.sh && ./build-opencv.sh &&  cd ~/opencv/opencv-4.1.2/build && make install
 
+# Version 1.2.1
+## WAVEGO
 
-RUN apt-get install python3 python3-pip -y 
-ADD  WAVEGO WAVEGO
+ADD WAVEGO WAVEGO
 WORKDIR WAVEGO
 
 RUN echo '' > /boot/cmdline.txt
 RUN apt-get update 
 RUN apt-get install -y python-dev python3-pip libfreetype6-dev libjpeg-dev \
-build-essential i2c-tools python3-smbus libhdf5-dev libhdf5-serial-dev libatlas-base-dev \ 
-libjasper-dev util-linux procps hostapd iproute2 iw haveged dnsmasq
+	build-essential i2c-tools python3-smbus libhdf5-dev libhdf5-serial-dev \
+	libatlas-base-dev libjasper-dev util-linux procps hostapd iproute2 iw \
+	haveged dnsmasq util-linux procps hostapd iproute2 iw haveged dnsmasq \
+	libopenexr-dev libqtgui4 libqt4-test python-serial
 
-RUN  apt-get install python-serial -y
+#RUN apt-get install python3-flask -y
+
 RUN pip3 install --upgrade pip
-#RUN  apt-get install python3-numpy -y
-RUN pip3 install opencv-contrib-python
-RUN apt-get install python3-flask -y
-
-
-RUN pip3 install pyserial
-RUN pip3 install flask
-RUN pip3 install flask_cors
-RUN pip3 install websockets
-
-RUN pip3 install opencv-contrib-python
-RUN apt-get -y install libhdf5-dev libhdf5-serial-dev libatlas-base-dev libjasper-dev
-RUN pip3 install imutils zmq pybase64 psutil
-RUN apt-get install -y util-linux procps hostapd iproute2 iw haveged dnsmasq
-
-
-
-#RUN python3 RPi/setup.py
+RUN pip3 install opencv-contrib-python pyserial flask flask_cors websockets \
+		 imutils zmq pybase64 psutil
 
 RUN python3 RPi/setup.py
 WORKDIR /tmp
-#RUN wget http://192.168.1.50:9000/12DOF/WAVEGO/RPi/webServer.py
-#RUN apt-get install -y libharfbuzz0b libopenexr22 libavcodec-extra57 libtiff5 libwebp-dev
-#ENTRYPOINT ['python3 /tmp/webServer.py']
-
-##################
-# INSTALL OPENCV #
-##################
-
-## https://github.com/opencv/opencv/releases
-#ENV OPENCV_VERSION=4.5.4
-
-RUN wget https://gist.githubusercontent.com/willprice/abe456f5f74aa95d7e0bb81d5a710b60/raw/d3d8e2f2b619ff9d266d4614a27962870382ed2e/build-opencv.sh
-RUN wget https://gist.githubusercontent.com/willprice/abe456f5f74aa95d7e0bb81d5a710b60/raw/d3d8e2f2b619ff9d266d4614a27962870382ed2e/download-opencv.sh
-RUN wget https://gist.githubusercontent.com/willprice/abe456f5f74aa95d7e0bb81d5a710b60/raw/d3d8e2f2b619ff9d266d4614a27962870382ed2e/install-deps.sh
-
-RUN chmod +x *.sh && ./download-opencv.sh && ./install-deps.sh && ./build-opencv.sh &&  cd ~/opencv/opencv-4.1.2/build && make install
 
 ADD WAVEGO /tmp/WAVEGO
 RUN python3 /tmp/WAVEGO/RPi/setup.py
 
-#RUN git clone https://github.com/waveshare/WAVEGO
 WORKDIR /tmp/WAVEGO/RPi
+
+
 #ENTRYPOINT python3 /tmp/WAVEGO/RPi/webServer.py
+
+## VERSION 1.3.0
+## ADD BLUETOOTH
+
+# RUN apt install -y bluetooth pi-bluetooth bluez blueman
+
+## VERSION 1.4.0
+## Mozilla TXT-Speach
+## docker run -it --cap-add=SYS_ADMIN --cap-add=NET_ADMIN --net=host ......
+
+#RUN apt install -y git python3-venv libopenblas-dev \
+#libblas-dev m4 cmake cython python3-dev python3-yaml \
+#python3-setuptools libatomic-ops-dev llvm espeak \
+#libsndfile1 libzstd1 libjbig0 \
+#libwebpdemux2 libtiff5 libwebp6 libatlas3-base
+#RUN pip3 install TTS
+#RUN sudo apt-get install espeak -y
+
+#RUN git clone  https://github.com/mozilla/TTS.git
+#RUN cd TTS
+#RUN git checkout 2e2221f
+#RUN pip install numpy==1.16.1 matplotlib==3.2.1 bokeh==1.4.0 Flask pyyaml attrdict segments scipy tensorboard tensorboardX Pillow Unidecode>=0.4.20 tqdm soundfile phonemizer
