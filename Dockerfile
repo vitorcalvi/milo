@@ -6,70 +6,119 @@ FROM raspbian/stretch
 LABEL maintainer="vitorcalvi"
 
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-RUN sudo apt-get install -y -q
+#RUN sudo apt-get install -y -q
 
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y wget nano git python3 python3-pip 
+RUN apt-get install -y wget nano git 
 
 
 # Version 1.1.0
 ## INSTALL OPENCV
 ## Source: https://gist.github.com/willprice/abe456f5f74aa95d7e0bb81d5a710b60
 
-RUN wget 'https://gist.githubusercontent.com/willprice/abe456f5f74aa95d7e0bb81d5a710b60/raw/d3d8e2f2b619ff9d266d4614a27962870382ed2e/build-opencv.sh'
-RUN wget https://gist.githubusercontent.com/willprice/abe456f5f74aa95d7e0bb81d5a710b60/raw/d3d8e2f2b619ff9d266d4614a27962870382ed2e/download-opencv.sh
-RUN wget https://gist.githubusercontent.com/willprice/abe456f5f74aa95d7e0bb81d5a710b60/raw/d3d8e2f2b619ff9d266d4614a27962870382ed2e/install-deps.sh
+RUN wget https://gist.githubusercontent.com/vitorcalvi/5482f1a3006f42d4f9a336bcfc557bf0/raw/39600faf4477852c99220b2ddaf991da881d89f5/build-opencv.sh && \
+wget https://gist.githubusercontent.com/vitorcalvi/5482f1a3006f42d4f9a336bcfc557bf0/raw/39600faf4477852c99220b2ddaf991da881d89f5/download-opencv.sh && \
+wget https://gist.githubusercontent.com/vitorcalvi/5482f1a3006f42d4f9a336bcfc557bf0/raw/39600faf4477852c99220b2ddaf991da881d89f5/install-deps.sh
 RUN chmod +x *.sh && ./download-opencv.sh && ./install-deps.sh && ./build-opencv.sh &&  cd ~/opencv/opencv-4.1.2/build && make install
+
+
+# INstall Python 3.10.4
+WORKDIR /home
+RUN sudo apt-get update -y
+RUN sudo apt-get install build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev \
+			 libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev -y
+RUN  wget https://www.python.org/ftp/python/3.10.4/Python-3.10.4.tar.xz
+RUN tar xf Python-3.10.4.tar.xz
+WORKDIR Python-3.10.4
+RUN  ./configure
+RUN  make -j 4
+RUN  sudo make install
+WORKDIR /home
+RUN sudo rm -rf Python-3.10.4
+RUN rm Python-3.10.4.tar.xz
+RUN sudo apt-get --purge remove build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev \ 
+	libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev -y
+RUN sudo apt-get autoremove -y
+RUN sudo apt-get clean
+
+
+RUN apt-get install -y \ 
+	python3-dev python3-pip python3-smbus  \
+	python3-serial python3-yaml python3-setuptools \
+	libfreetype6-dev libjpeg-dev \
+	build-essential i2c-tools \
+	libhdf5-dev  \
+	libhdf5-serial-dev \
+	libatlas-base-dev libjasper-dev \ 
+	util-linux procps hostapd iproute2 iw \
+	haveged dnsmasq util-linux procps \ 
+	hostapd iproute2 iw haveged dnsmasq \
+	libopenexr-dev libqtgui4 libqt4-test \
+	libopenblas-dev libblas-dev m4 \
+        cmake cython \
+        libatomic-ops-dev llvm \
+        espeak libsndfile1 \
+        libzstd1 libjbig0 \
+        libwebpdemux2 libtiff5 \
+        libwebp6 libatlas3-base
+
+
+
+RUN pip3 install --upgrade pip
+RUN pip3 install pyserial flask flask_cors  
+RUN pip3 install websockets imutils zmq 
+RUN pip3 install pybase64 psutil 
 
 # Version 1.2.1
 ## WAVEGO
-
-ADD WAVEGO WAVEGO
-WORKDIR WAVEGO
-
 RUN echo '' > /boot/cmdline.txt
-RUN apt-get update 
-RUN apt-get install -y python-dev python3-pip libfreetype6-dev libjpeg-dev \
-	build-essential i2c-tools python3-smbus libhdf5-dev libhdf5-serial-dev \
-	libatlas-base-dev libjasper-dev util-linux procps hostapd iproute2 iw \
-	haveged dnsmasq util-linux procps hostapd iproute2 iw haveged dnsmasq \
-	libopenexr-dev libqtgui4 libqt4-test python-serial
-
-#RUN apt-get install python3-flask -y
-
-RUN pip3 install --upgrade pip
-RUN pip3 install opencv-contrib-python pyserial flask flask_cors websockets \
-		 imutils zmq pybase64 psutil
-
-RUN python3 RPi/setup.py
-WORKDIR /tmp
 
 ADD WAVEGO /tmp/WAVEGO
 RUN python3 /tmp/WAVEGO/RPi/setup.py
-
 WORKDIR /tmp/WAVEGO/RPi
-
 
 #ENTRYPOINT python3 /tmp/WAVEGO/RPi/webServer.py
 
 ## VERSION 1.3.0
-## ADD BLUETOOTH
+##################
 
-# RUN apt install -y bluetooth pi-bluetooth bluez blueman
-
-## VERSION 1.4.0
 ## Mozilla TXT-Speach
 ## docker run -it --cap-add=SYS_ADMIN --cap-add=NET_ADMIN --net=host ......
 
-#RUN apt install -y git python3-venv libopenblas-dev \
-#libblas-dev m4 cmake cython python3-dev python3-yaml \
-#python3-setuptools libatomic-ops-dev llvm espeak \
-#libsndfile1 libzstd1 libjbig0 \
-#libwebpdemux2 libtiff5 libwebp6 libatlas3-base
-#RUN pip3 install TTS
-#RUN sudo apt-get install espeak -y
 
+## VERSION 1.3.1
 #RUN git clone  https://github.com/mozilla/TTS.git
-#RUN cd TTS
-#RUN git checkout 2e2221f
-#RUN pip install numpy==1.16.1 matplotlib==3.2.1 bokeh==1.4.0 Flask pyyaml attrdict segments scipy tensorboard tensorboardX Pillow Unidecode>=0.4.20 tqdm soundfile phonemizer
+RUN wget http://192.168.1.50:9000/LEGACY/TTS.tar.gz
+RUN tar xf TTS.tar.gz
+
+WORKDIR TTS
+
+RUN pip3 install torch>=1.5
+RUN pip3 install tensorflow==2.3.1
+RUN pip3 install numpy==1.17.5
+RUN pip3 install scipy>=0.19.0
+RUN pip3 install numba==0.48
+RUN pip3 install librosa==0.7.2
+RUN pip3 install phonemizer>=2.2.0
+RUN pip3 install unidecode==0.4.20
+RUN pip3 install tensorboardX
+RUN pip3 install matplotlib
+RUN pip3 install Pillow
+RUN pip3 install tqdm
+RUN pip3 install inflect
+RUN pip3 install bokeh==1.4.0
+RUN pip3 install pysbd
+RUN pip3 install pyworld
+RUN pip3 install soundfile
+RUN pip3 install nose==1.3.7
+RUN pip3 install cardboardlint==1.3.0
+RUN pip3 install pylint==2.5.3
+RUN pip3 install gdown
+RUN pip3 install umap-learn
+RUN pip3 install cython
+RUN pip3 install pyyaml
+
+
+####RUN pip3 install -e .
+
+
