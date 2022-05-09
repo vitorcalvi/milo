@@ -22,20 +22,20 @@ wget https://gist.githubusercontent.com/vitorcalvi/5482f1a3006f42d4f9a336bcfc557
 RUN chmod +x *.sh && ./download-opencv.sh && ./install-deps.sh && ./build-opencv.sh &&  cd ~/opencv/opencv-4.1.2/build && make install
 
 
-# INstall Python 3.10.4
+# INstall Python 3.9.4
 WORKDIR /home
 RUN sudo apt-get update -y
 RUN sudo apt-get install build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev \
 			 libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev -y
-RUN  wget https://www.python.org/ftp/python/3.10.4/Python-3.10.4.tar.xz
-RUN tar xf Python-3.10.4.tar.xz
-WORKDIR Python-3.10.4
+RUN  wget https://www.python.org/ftp/python/3.9.4/Python-3.9.4.tar.xz
+RUN tar xf Python-3.9.4.tar.xz
+WORKDIR Python-3.9.4
 RUN  ./configure
 RUN  make -j 4
 RUN  sudo make install
 WORKDIR /home
-RUN sudo rm -rf Python-3.10.4
-RUN rm Python-3.10.4.tar.xz
+RUN sudo rm -rf Python-3.9.4
+RUN rm Python-3.9.4.tar.xz
 RUN sudo apt-get --purge remove build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev \ 
 	libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev -y
 RUN sudo apt-get autoremove -y
