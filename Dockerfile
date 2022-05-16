@@ -9,6 +9,7 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 #RUN sudo apt-get install -y -q
 
 RUN apt-get update && apt-get upgrade -y
+
 RUN apt-get install -y wget nano git 
 
 
@@ -26,20 +27,21 @@ RUN chmod +x *.sh && ./download-opencv.sh && ./install-deps.sh && ./build-opencv
 WORKDIR /home
 RUN sudo apt-get update -y
 RUN sudo apt-get install build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev \
-			 libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev -y
+			 libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev \ 
+			 liblzma-dev zlib1g-dev libffi-dev -y
 RUN  wget https://www.python.org/ftp/python/3.9.4/Python-3.9.4.tar.xz
 RUN tar xf Python-3.9.4.tar.xz
 WORKDIR Python-3.9.4
 RUN  ./configure
 RUN  make -j 4
 RUN  sudo make install
+
 WORKDIR /home
 RUN sudo rm -rf Python-3.9.4
 RUN rm Python-3.9.4.tar.xz
 RUN sudo apt-get --purge remove build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev \ 
 	libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev -y
-RUN sudo apt-get autoremove -y
-RUN sudo apt-get clean
+RUN sudo apt-get autoremove -y && sudo apt-get clean
 
 
 RUN apt-get install -y \ 
@@ -83,11 +85,11 @@ WORKDIR /tmp/WAVEGO/RPi
 ##################
 
 #RUN pip3 install deepspeech
-RUN wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-cp37-cp37m-linux_armv7l.whl
-RUN pip3 install --upgrade setuptools pip
+#RUN wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-cp37-cp37m-linux_armv7l.whl
+#RUN pip3 install --upgrade setuptools pip
 
 #RUN pip install 'https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-cp37-cp37m-linux_aarch64.whl'
-RUN pip3 install 'https://github.com/mozilla/DeepSpeech/releases/download/v0.9.2/deepspeech-0.9.2-cp37-cp37m-linux_armv7l.whl'
+#RUN pip3 install 'https://github.com/mozilla/DeepSpeech/releases/download/v0.9.2/deepspeech-0.9.2-cp37-cp37m-linux_armv7l.whl'
 ## Mozilla TXT-Speach
 ## docker run -it --cap-add=SYS_ADMIN --cap-add=NET_ADMIN --net=host ......
 #RUN wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-cp37-cp37m-linux_aarch64.whl

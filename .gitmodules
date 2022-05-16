@@ -1,0 +1,3 @@
+[submodule "WAVEGO"]
+	path = WAVEGO
+	url = https://github.com/waveshare/WAVEGO
