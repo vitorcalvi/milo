@@ -13,12 +13,12 @@ RUN apt-get install -y wget nano git
 # Version 1.0.1
 ## SERVER OPENSSH
 
-RUN apt-get install -y openssh-server
-RUN mkdir /var/run/sshd
-RUN echo 'root:1' | chpasswd
-RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
-RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
-EXPOSE 22
+#RUN apt-get install -y openssh-server
+#RUN mkdir /var/run/sshd
+#RUN echo 'root:1' | chpasswd
+#RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
+#RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+#EXPOSE 22
 #CMD ["/usr/sbin/sshd", "-D"]
 
 
@@ -49,10 +49,10 @@ RUN  ./configure
 RUN  make -j 4
 RUN  sudo make install
 
-RUN sudo rm -rf Python-3.9.4 && rm Python-3.9.4.tar.xz
-RUN sudo apt-get --purge remove build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev \ 
-	libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev -y
-RUN sudo apt-get autoremove -y && sudo apt-get clean
+RUN sudo rm -rf Python-3.9.4 && \
+	sudo apt-get --purge remove build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev \ 
+	libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev -y && \
+	sudo apt-get autoremove -y && sudo apt-get clean
 
 
 #RUN apt-get install -y \ 
@@ -77,28 +77,29 @@ RUN sudo apt-get autoremove -y && sudo apt-get clean
 
 # Version 1.2.0
 ###############
-
-RUN pip3 install --upgrade pip
-RUN pip3 install pyserial flask flask_cors websockets imutils zmq pybase64 psutil
-
 ## WAVEGO
+
 RUN echo '' > /boot/cmdline.txt
 ADD WAVEGO /tmp/WAVEGO
 RUN python3 /tmp/WAVEGO/RPi/setup.py
 WORKDIR /tmp/WAVEGO/RPi
+RUN setup_docker.py
 
 #ENTRYPOINT python3 /tmp/WAVEGO/RPi/webServer.py
 
 ## VERSION 1.3.0
 ##################
 ## PICO TTS
+
 RUN sudo apt-get update && sudo apt-get install -y alsa-utils mplayer 
 RUN wget http://ftp.us.debian.org/debian/pool/non-free/s/svox/libttspico0_1.0+git20130326-9_armhf.deb \
-	&& wget http://ftp.us.debian.org/debian/pool/non-free/s/svox/libttspico-utils_1.0+git20130326-9_armhf.deb \
-	&& sudo apt-get install -y -f ./libttspico0_1.0+git20130326-9_armhf.deb ./libttspico-utils_1.0+git20130326-9_armhf.deb
+	 && wget http://ftp.us.debian.org/debian/pool/non-free/s/svox/libttspico-utils_1.0+git20130326-9_armhf.deb \
+	 && sudo apt-get install -y -f ./libttspico0_1.0+git20130326-9_armhf.deb ./libttspico-utils_1.0+git20130326-9_armhf.deb
 
 RUN sudo sed -i 's/defaults.pcm.card 0/defaults.pcm.card 1/g' /usr/share/alsa/alsa.conf && \
-	sed -i 's/defaults.ctl.card 0/defaults.ctl.card 1/g' /usr/share/alsa/alsa.conf
+	 sed -i 's/defaults.ctl.card 0/defaults.ctl.card 1/g' /usr/share/alsa/alsa.conf
+
+
 
 
 ## VERSION 1.4.0

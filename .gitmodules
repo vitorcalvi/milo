@@ -13,3 +13,9 @@
 [submodule "picotts"]
 	path = picotts
 	url = https://github.com/naggety/picotts
+[submodule "gti-aistick"]
+	path = gti-aistick
+	url = https://github.com/vitorcalvi/gti-aistick
+[submodule "rex-gym"]
+	path = rex-gym
+	url = https://github.com/vitorcalvi/rex-gym
