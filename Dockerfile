@@ -1,19 +1,29 @@
-## RASPBIAN BASE DOCKER IMAGE
+## MILO - ARTIFICIAL INTELIGENCE DOG ROBOT
 #############################
 # Version 1.0.0
 
 FROM raspbian/stretch
-LABEL maintainer="vitorcalvi"
+LABEL maintainer="https://github.com/vitorcalvi"
 
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-#RUN sudo apt-get install -y -q
-
 RUN apt-get update && apt-get upgrade -y
 
 RUN apt-get install -y wget nano git 
 
+# Version 1.0.1
+## SERVER OPENSSH
+
+RUN apt-get install -y openssh-server
+RUN mkdir /var/run/sshd
+RUN echo 'root:1' | chpasswd
+RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
+RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+EXPOSE 22
+#CMD ["/usr/sbin/sshd", "-D"]
+
 
 # Version 1.1.0
+################
 ## INSTALL OPENCV
 ## Source: https://gist.github.com/willprice/abe456f5f74aa95d7e0bb81d5a710b60
 
@@ -23,12 +33,15 @@ wget https://gist.githubusercontent.com/vitorcalvi/5482f1a3006f42d4f9a336bcfc557
 RUN chmod +x *.sh && ./download-opencv.sh && ./install-deps.sh && ./build-opencv.sh &&  cd ~/opencv/opencv-4.1.2/build && make install
 
 
-# INstall Python 3.9.4
+# Version 1.1.1
+###############
+## INSTALL PYTHON 3.9.4
 WORKDIR /home
 RUN sudo apt-get update -y
 RUN sudo apt-get install build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev \
 			 libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev \ 
 			 liblzma-dev zlib1g-dev libffi-dev -y
+
 RUN  wget https://www.python.org/ftp/python/3.9.4/Python-3.9.4.tar.xz
 RUN tar xf Python-3.9.4.tar.xz
 WORKDIR Python-3.9.4
@@ -36,9 +49,7 @@ RUN  ./configure
 RUN  make -j 4
 RUN  sudo make install
 
-WORKDIR /home
-RUN sudo rm -rf Python-3.9.4
-RUN rm Python-3.9.4.tar.xz
+RUN sudo rm -rf Python-3.9.4 && rm Python-3.9.4.tar.xz
 RUN sudo apt-get --purge remove build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev \ 
 	libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev -y
 RUN sudo apt-get autoremove -y && sudo apt-get clean
@@ -64,15 +75,14 @@ RUN sudo apt-get autoremove -y && sudo apt-get clean
 #        libwebpdemux2 libtiff5 \
 #        libwebp6 libatlas3-base
 
-
+# Version 1.2.0
+###############
 
 RUN pip3 install --upgrade pip
-RUN pip3 install pyserial flask flask_cors  websockets imutils zmq pybase64 psutil 
+RUN pip3 install pyserial flask flask_cors websockets imutils zmq pybase64 psutil
 
-# Version 1.2.1
 ## WAVEGO
 RUN echo '' > /boot/cmdline.txt
-
 ADD WAVEGO /tmp/WAVEGO
 RUN python3 /tmp/WAVEGO/RPi/setup.py
 WORKDIR /tmp/WAVEGO/RPi
@@ -81,58 +91,25 @@ WORKDIR /tmp/WAVEGO/RPi
 
 ## VERSION 1.3.0
 ##################
-
-RUN sudo apt install -y python3-scipy python3-pyaudio libatlas3-base
-RUN wget http://192.168.1.50:9000/LEGACY/tensorflow-compilations/armv7l/tensorflow-2.4.0-cp35-none-linux_armv7l.whl
-
 ## PICO TTS
-#RUN apt-get update -y
-#RUN wget https://launchpad.net/ubuntu/+archive/primary/+files/hardening-includes_2.8+nmu3ubuntu1_all.deb
-#RUN dpkg -i hardening-includes_2.8+nmu3ubuntu1_all.deb
-#RUN sudo apt-get install -y fakeroot debhelper automake autoconf libtool help2man libpopt-dev 
-#RUN mkdir pico_build
-#USER root
-#WORKDIR pico_build
-#RUN apt-get source libttspico-utils
-#WORKDIR svox-1.0+git20110131
-#RUN dpkg-buildpackage  -us -uc
-#RUN sudo dpkg -i libttspico-data_1.0+git20110131-2_all.deb
-#RUN sudo dpkg -i libttspico0_1.0+git20110131-2_armhf.deb
-#RUN sudo dpkg -i libttspico-utils_1.0+git20110131-2_armhf.deb
-
-#RUN pip3 install --trusted-host pypi.org --trusted-host piwheels.org torch
-#RUN pip3 install tensorflow==2.3.1
-#RUN pip3 install numpy==1.17.5
-#RUN pip3 install scipy>=0.19.0
-#RUN pip3 install numba==0.48
-#RUN pip3 install librosa==0.7.2
-#RUN pip3 install phonemizer>=2.2.0
-#RUN pip3 install unidecode==0.4.20
-#RUN pip3 install tensorboardX
-#RUN pip3 install matplotlib
-#RUN pip3 install Pillow
-#RUN pip3 install tqdm
-#RUN pip3 install inflect
-#RUN pip3 install bokeh==1.4.0
-#RUN pip3 install pysbd
-#RUN pip3 install pyworld
-#RUN pip3 install soundfile
-#RUN pip3 install nose==1.3.7
-#RUN pip3 install cardboardlint==1.3.0
-#RUN pip3 install pylint==2.5.3
-#RUN pip3 install gdown
-#RUN pip3 install umap-learn
-#RUN pip3 install cython
-#RUN pip3 install pyyaml
-
-
-#RUN pip3 install -e .
-
-
-## PICO TTS EASY
 RUN sudo apt-get update && sudo apt-get install -y alsa-utils mplayer 
 RUN wget http://ftp.us.debian.org/debian/pool/non-free/s/svox/libttspico0_1.0+git20130326-9_armhf.deb \
-&& wget http://ftp.us.debian.org/debian/pool/non-free/s/svox/libttspico-utils_1.0+git20130326-9_armhf.deb \
-&& sudo apt-get install -y -f ./libttspico0_1.0+git20130326-9_armhf.deb ./libttspico-utils_1.0+git20130326-9_armhf.deb
-RUN sudo sed -i 's/defaults.pcm.card 0/defaults.pcm.card 1/g' /usr/share/alsa/alsa.conf
-RUN sudo sed -i 's/defaults.ctl.card 0/defaults.ctl.card 1/g' /usr/share/alsa/alsa.conf
+	&& wget http://ftp.us.debian.org/debian/pool/non-free/s/svox/libttspico-utils_1.0+git20130326-9_armhf.deb \
+	&& sudo apt-get install -y -f ./libttspico0_1.0+git20130326-9_armhf.deb ./libttspico-utils_1.0+git20130326-9_armhf.deb
+
+RUN sudo sed -i 's/defaults.pcm.card 0/defaults.pcm.card 1/g' /usr/share/alsa/alsa.conf && \
+	sed -i 's/defaults.ctl.card 0/defaults.ctl.card 1/g' /usr/share/alsa/alsa.conf
+
+
+## VERSION 1.4.0
+################
+## TENSORFLOW FAT
+
+#RUN sudo apt install -y python3-scipy python3-pyaudio libatlas3-base
+#RUN wget http://192.168.1.50:9000/LEGACY/tensorflow-compilations/armv7l/tensorflow-2.4.0-cp35-none-linux_armv7l.whl
+
+
+# VERSION 1.4.1
+###############
+## TENSORFLOW LITE
+
