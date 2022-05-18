@@ -7,3 +7,6 @@
 [submodule "raspberrypi-docker-tensorflow-opencv"]
 	path = raspberrypi-docker-tensorflow-opencv
 	url = https://github.com/vitorcalvi/raspberrypi-docker-tensorflow-opencv
+[submodule "WAVEGO-DOF"]
+	path = WAVEGO-DOF
+	url = https://github.com/vitorcalvi/WAVEGO-DOF
