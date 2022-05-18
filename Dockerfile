@@ -44,32 +44,30 @@ RUN sudo apt-get --purge remove build-essential tk-dev libncurses5-dev libncurse
 RUN sudo apt-get autoremove -y && sudo apt-get clean
 
 
-RUN apt-get install -y \ 
-	python3-dev python3-pip python3-smbus  \
-	python3-serial python3-yaml python3-setuptools \
-	libfreetype6-dev libjpeg-dev \
-	build-essential i2c-tools \
-	libhdf5-dev  \
-	libhdf5-serial-dev \
-	libatlas-base-dev libjasper-dev \ 
-	util-linux procps hostapd iproute2 iw \
-	haveged dnsmasq util-linux procps \ 
-	hostapd iproute2 iw haveged dnsmasq \
-	libopenexr-dev libqtgui4 libqt4-test \
-	libopenblas-dev libblas-dev m4 \
-        cmake cython \
-        libatomic-ops-dev llvm \
-        espeak libsndfile1 \
-        libzstd1 libjbig0 \
-        libwebpdemux2 libtiff5 \
-        libwebp6 libatlas3-base
+#RUN apt-get install -y \ 
+#	python3-dev python3-pip python3-smbus  \
+#	python3-serial python3-yaml python3-setuptools \
+#	libfreetype6-dev libjpeg-dev \
+#	build-essential i2c-tools \
+#	libhdf5-dev  \
+#	libhdf5-serial-dev \
+#	libatlas-base-dev libjasper-dev \ 
+#	util-linux procps hostapd iproute2 iw \
+#	haveged dnsmasq util-linux procps \ 
+#	hostapd iproute2 iw haveged dnsmasq \
+#	libopenexr-dev libqtgui4 libqt4-test \
+#	libopenblas-dev libblas-dev m4 \
+#       cmake cython \
+#        libatomic-ops-dev llvm \
+#        espeak libsndfile1 \
+#        libzstd1 libjbig0 \
+#        libwebpdemux2 libtiff5 \
+#        libwebp6 libatlas3-base
 
 
 
 RUN pip3 install --upgrade pip
-RUN pip3 install pyserial flask flask_cors  
-RUN pip3 install websockets imutils zmq 
-RUN pip3 install pybase64 psutil 
+RUN pip3 install pyserial flask flask_cors  websockets imutils zmq pybase64 psutil 
 
 # Version 1.2.1
 ## WAVEGO
@@ -84,28 +82,8 @@ WORKDIR /tmp/WAVEGO/RPi
 ## VERSION 1.3.0
 ##################
 
-#RUN pip3 install deepspeech
-#RUN wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-cp37-cp37m-linux_armv7l.whl
-#RUN pip3 install --upgrade setuptools pip
-
-#RUN pip install 'https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-cp37-cp37m-linux_aarch64.whl'
-#RUN pip3 install 'https://github.com/mozilla/DeepSpeech/releases/download/v0.9.2/deepspeech-0.9.2-cp37-cp37m-linux_armv7l.whl'
-## Mozilla TXT-Speach
-## docker run -it --cap-add=SYS_ADMIN --cap-add=NET_ADMIN --net=host ......
-#RUN wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-cp37-cp37m-linux_aarch64.whl
-#RUN pip3 install --user deepspeech-0.9.3-cp37-cp37m-linux_aarch64.whl
-
-
-## VERSION 1.3.1
-#RUN git clone  https://github.com/mozilla/TTS.git
-#RUN wget http://192.168.1.50:9000/LEGACY/TTS.tar.gz
-#RUN tar xf TTS.tar.gz
-
-#WORKDIR TTS
-#RUN sudo apt-get install gcc-4.9 -y
-#RUN sudo apt-get upgrade libstdc++6 -y
-#RUN sudo apt-get install -y python3-numpy
-#RUN sudo apt-get install libatlas-base-dev -y
+RUN sudo apt install -y python3-scipy python3-pyaudio libatlas3-base
+RUN wget http://192.168.1.50:9000/LEGACY/tensorflow-compilations/armv7l/tensorflow-2.4.0-cp35-none-linux_armv7l.whl
 
 ## PICO TTS
 #RUN apt-get update -y
@@ -151,3 +129,10 @@ WORKDIR /tmp/WAVEGO/RPi
 #RUN pip3 install -e .
 
 
+## PICO TTS EASY
+RUN sudo apt-get update && sudo apt-get install -y alsa-utils mplayer 
+RUN wget http://ftp.us.debian.org/debian/pool/non-free/s/svox/libttspico0_1.0+git20130326-9_armhf.deb \
+&& wget http://ftp.us.debian.org/debian/pool/non-free/s/svox/libttspico-utils_1.0+git20130326-9_armhf.deb \
+&& sudo apt-get install -y -f ./libttspico0_1.0+git20130326-9_armhf.deb ./libttspico-utils_1.0+git20130326-9_armhf.deb
+RUN sudo sed -i 's/defaults.pcm.card 0/defaults.pcm.card 1/g' /usr/share/alsa/alsa.conf
+RUN sudo sed -i 's/defaults.ctl.card 0/defaults.ctl.card 1/g' /usr/share/alsa/alsa.conf
