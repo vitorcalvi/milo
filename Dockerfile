@@ -80,11 +80,8 @@ RUN sudo rm -rf Python-3.9.4 && \
 ## WAVEGO
 
 RUN echo '' > /boot/cmdline.txt
-ADD WAVEGO /tmp/WAVEGO
-RUN python3 /tmp/WAVEGO/RPi/setup.py
-WORKDIR /tmp/WAVEGO/RPi
-RUN setup_docker.py
-
+ADD WAVEGO-DOF /tmp/WAVEGO-DOF
+RUN python3 /tmp/WAVEGO-DOF/RPi/setup_docker.py
 #ENTRYPOINT python3 /tmp/WAVEGO/RPi/webServer.py
 
 ## VERSION 1.3.0
