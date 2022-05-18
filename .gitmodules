@@ -19,3 +19,6 @@
 [submodule "rex-gym"]
 	path = rex-gym
 	url = https://github.com/vitorcalvi/rex-gym
+[submodule "seeed-voicecard"]
+	path = seeed-voicecard
+	url = https://github.com/respeaker/seeed-voicecard

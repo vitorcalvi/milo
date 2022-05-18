@@ -35,45 +35,25 @@ RUN chmod +x *.sh && ./download-opencv.sh && ./install-deps.sh && ./build-opencv
 
 # Version 1.1.1
 ###############
-## INSTALL PYTHON 3.9.4
+## INSTALL PYTHON 3.8.6 because TF doesnt work later than thins
 WORKDIR /home
 RUN sudo apt-get update -y
 RUN sudo apt-get install build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev \
 			 libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev \ 
 			 liblzma-dev zlib1g-dev libffi-dev -y
 
-RUN  wget https://www.python.org/ftp/python/3.9.4/Python-3.9.4.tar.xz
-RUN tar xf Python-3.9.4.tar.xz
-WORKDIR Python-3.9.4
+RUN  wget https://www.python.org/ftp/python/3.8.6/Python-3.8.6.tar.xz
+RUN tar xf Python-3.8.6.tar.xz
+WORKDIR Python-3.8.6
 RUN  ./configure
 RUN  make -j 4
 RUN  sudo make install
 
-RUN sudo rm -rf Python-3.9.4 && \
+RUN sudo rm -rf Python-3.8.6 && \
 	sudo apt-get --purge remove build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev \ 
 	libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev -y && \
 	sudo apt-get autoremove -y && sudo apt-get clean
 
-
-#RUN apt-get install -y \ 
-#	python3-dev python3-pip python3-smbus  \
-#	python3-serial python3-yaml python3-setuptools \
-#	libfreetype6-dev libjpeg-dev \
-#	build-essential i2c-tools \
-#	libhdf5-dev  \
-#	libhdf5-serial-dev \
-#	libatlas-base-dev libjasper-dev \ 
-#	util-linux procps hostapd iproute2 iw \
-#	haveged dnsmasq util-linux procps \ 
-#	hostapd iproute2 iw haveged dnsmasq \
-#	libopenexr-dev libqtgui4 libqt4-test \
-#	libopenblas-dev libblas-dev m4 \
-#       cmake cython \
-#        libatomic-ops-dev llvm \
-#        espeak libsndfile1 \
-#        libzstd1 libjbig0 \
-#        libwebpdemux2 libtiff5 \
-#        libwebp6 libatlas3-base
 
 # Version 1.2.0
 ###############
@@ -105,7 +85,15 @@ RUN sudo sed -i 's/defaults.pcm.card 0/defaults.pcm.card 1/g' /usr/share/alsa/al
 
 #RUN sudo apt install -y python3-scipy python3-pyaudio libatlas3-base
 #RUN wget http://192.168.1.50:9000/LEGACY/tensorflow-compilations/armv7l/tensorflow-2.4.0-cp35-none-linux_armv7l.whl
+#RUN wget https://storage.googleapis.com/tensorflow/raspberrypi/tensorflow-2.1.0-cp35-none-linux_armv7l.whl
+#RUN pip3 install tensorflow-*.whl
+#RUN rm *.whl
 
+#RUN wget https://github.com/Qengineering/Tensorflow-Raspberry-Pi/raw/master/tensorflow-2.1.0-cp37-cp37m-linux_armv7l.whl
+#RUN  sudo -H pip3 install tensorflow-2.1.0-cp37-cp37m-linux_armv7l.whl
+#RUN python -c 'import tensorflow as tf; print(tf.__version__)'  # for Python 2
+RUN pip3 install tensorflow
+RUN python3 -c 'import tensorflow as tf; print(tf.__version__)'  # for Python 3
 
 # VERSION 1.4.1
 ###############
