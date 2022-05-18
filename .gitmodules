@@ -10,3 +10,6 @@
 [submodule "WAVEGO-DOF"]
 	path = WAVEGO-DOF
 	url = https://github.com/vitorcalvi/WAVEGO-DOF
+[submodule "picotts"]
+	path = picotts
+	url = https://github.com/naggety/picotts
