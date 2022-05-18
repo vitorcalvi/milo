@@ -92,10 +92,21 @@ RUN sudo sed -i 's/defaults.pcm.card 0/defaults.pcm.card 1/g' /usr/share/alsa/al
 #RUN wget https://github.com/Qengineering/Tensorflow-Raspberry-Pi/raw/master/tensorflow-2.1.0-cp37-cp37m-linux_armv7l.whl
 #RUN  sudo -H pip3 install tensorflow-2.1.0-cp37-cp37m-linux_armv7l.whl
 #RUN python -c 'import tensorflow as tf; print(tf.__version__)'  # for Python 2
-RUN pip3 install tensorflow
-RUN python3 -c 'import tensorflow as tf; print(tf.__version__)'  # for Python 3
+
+RUN python3 --version
+##RUN pip3 install tensorflow
+##RUN python3 -c 'import tensorflow as tf; print(tf.__version__)'  # for Python 3
 
 # VERSION 1.4.1
 ###############
 ## TENSORFLOW LITE
+
+
+# VERSION 1.5.0
+###############
+## Install Respeaker Seed
+ADD seeed-voicecard /tmp/seeed-voicecard
+WORKDIR /tmp/seeed-voicecard/
+RUN ./ubuntu-prerequisite.sh
+RUN ./install.sh
 
