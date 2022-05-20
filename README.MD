@@ -1,5 +1,4 @@
-# Milo - Artificial Inteligence Dog Robot 
-
+![alt text for screen readers](https://repository-images.githubusercontent.com/488006361/cbd94f28-bcfa-4fa4-a784-a9a57678b3fa)
 
 Some drafts 
 ### Docker - To use ASLA Audio
