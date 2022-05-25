@@ -1,5 +1,9 @@
 ![alt text for screen readers](https://repository-images.githubusercontent.com/488006361/cbd94f28-bcfa-4fa4-a784-a9a57678b3fa)
 
+### Raspberry Image to Build
+- https://www.raspberrypi.com/software/
+Make, user, wifi etc with RPI Image Builder
+
 Some drafts 
 ### Docker - To use ASLA Audio
 ```
