@@ -2,7 +2,7 @@
 
 ### Raspberry Image to Build
 - https://www.raspberrypi.com/software/
-Make, user, wifi etc with RPI Image Builder
+- Build image with user/pass, wifi etc with RPI Image Builder
 
 Some drafts 
 ### Docker - To use ASLA Audio
